@@ -16,7 +16,6 @@ import com.dudoji.tangvivor.ui.theme.TangvivorTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
     }
 }
