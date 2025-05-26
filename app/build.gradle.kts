@@ -44,6 +44,9 @@ dependencies {
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     // Face Detection
     // CameraX
