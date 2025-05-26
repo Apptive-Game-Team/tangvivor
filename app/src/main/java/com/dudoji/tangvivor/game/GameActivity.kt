@@ -1,28 +1,47 @@
 package com.dudoji.tangvivor.game
 
+import android.widget.FrameLayout
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.activity.ComponentActivity
+import androidx.camera.view.PreviewView
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import com.dudoji.tangvivor.R
+import com.dudoji.tangvivor.game.camera.OnFacePositionListener
 import com.dudoji.tangvivor.game.entity.Master
 import com.dudoji.tangvivor.game.service.EnemyController
+import com.dudoji.tangvivor.game.service.FaceDetector
 import com.dudoji.tangvivor.game.service.GameLoop
 import com.dudoji.tangvivor.game.service.PlayerController
 import kotlin.properties.Delegates
 
-class GameActivity : ComponentActivity() {
+class GameActivity : ComponentActivity(), OnFacePositionListener {
 
     lateinit var seekBar : SeekBar
     lateinit var playerController : PlayerController
     lateinit var enemyController : EnemyController
 
+    // Camera Setting
+    private lateinit var previewView: PreviewView
+    private lateinit var faceDetector: FaceDetector
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+
+        // Camera Setting
+        previewView = findViewById(R.id.previewView)
+        faceDetector = FaceDetector(
+            context = this,
+            lifecycleOwner = this,
+            previewView = previewView,
+            listener = this
+        )
+        
         me = intent.getIntExtra("me", -1)
         playerController = PlayerController(
             if (me == 1) Master.User1 else Master.User2,
@@ -64,5 +83,20 @@ class GameActivity : ComponentActivity() {
                 // Handle stop of touch
             }
         })
+    }
+
+    // Camera Function
+    override fun onFacePosition(normX: Float) {
+        playerController.setX(normX)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        faceDetector.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        faceDetector.stop()
     }
 }

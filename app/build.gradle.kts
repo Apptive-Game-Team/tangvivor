@@ -48,6 +48,17 @@ dependencies {
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+    // Face Detection
+    // CameraX
+    implementation("androidx.camera:camera-camera2:1.4.2")
+    implementation("androidx.camera:camera-lifecycle:1.4.2")
+    implementation("androidx.camera:camera-view:1.4.2")
+    implementation("androidx.camera:camera-mlkit-vision:1.4.2")
+
+    // ML Kit Face Detection
+    implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
