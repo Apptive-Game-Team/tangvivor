@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.dudoji.tangvivor.matching.entity.Room
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.checkerframework.checker.units.qual.t
 
 object RoomRepository {
     val COLLECTION_NAME = "matchings"
@@ -17,7 +18,7 @@ object RoomRepository {
     fun createRoom(roomName: String, activity: ComponentActivity) {
         activity.lifecycleScope.launch{
             val room = Room(name = roomName, user1 = UserRepository.me.id, user2 = "")
-            db.collection(COLLECTION_NAME).add(room).addOnSuccessListener { documentReference ->
+            db.collection(COLLECTION_NAME).document(roomName).set(room).addOnSuccessListener { documentReference ->
                 Toast.makeText(activity, "Room created with ID", Toast.LENGTH_SHORT).show()
             }.addOnFailureListener { e ->
                 Toast.makeText(activity, "Failed to create room", Toast.LENGTH_SHORT).show()
