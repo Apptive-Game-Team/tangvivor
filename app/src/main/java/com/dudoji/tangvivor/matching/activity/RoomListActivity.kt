@@ -11,7 +11,9 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.dudoji.tangvivor.R
+import com.dudoji.tangvivor.game.GameActivity
 import com.dudoji.tangvivor.matching.entity.Room
+import com.dudoji.tangvivor.repository.GameRepository
 import com.dudoji.tangvivor.repository.RoomRepository
 import com.dudoji.tangvivor.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -49,8 +51,11 @@ class RoomListActivity : ComponentActivity() {
             if (roomName.isNotEmpty()) {
                 lifecycleScope.launch {
                     RoomRepository.createRoom(roomName, this@RoomListActivity)
-                    val roomList = RoomRepository.getRooms()
-                    roomListRecyclerView.adapter = RoomListAdapter(roomList, this@RoomListActivity)
+                    GameRepository.saveGame(roomName)
+                    val intent = Intent(this@RoomListActivity, GameActivity::class.java)
+                    intent.putExtra("roomName", roomName)
+                    intent.putExtra("me", 1)
+                    startActivity(intent)
                 }
             }
         }
@@ -95,7 +100,9 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
                         "Joined room: ${room.name}",
                         Toast.LENGTH_SHORT
                     ).show()
-
+                    RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
+                        .document(room.name!!)
+                        .delete()
                     val intent = Intent(holder.itemView.context, com.dudoji.tangvivor.game.GameActivity::class.java)
                     intent.putExtra("roomName", room.name)
                     intent.putExtra("me", 2)
