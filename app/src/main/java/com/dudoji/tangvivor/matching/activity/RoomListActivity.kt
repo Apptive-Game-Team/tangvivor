@@ -2,7 +2,7 @@ package com.dudoji.tangvivor.matching.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -31,6 +31,7 @@ class RoomListActivity : ComponentActivity() {
         roomListRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         lifecycleScope.launch {
             val roomList = RoomRepository.getRooms()
+            Log.d("RoomListActivity", "Room list fetched: $roomList")
             roomListRecyclerView.adapter = RoomListAdapter(roomList, this@RoomListActivity)
         }
 
@@ -79,7 +80,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         holder.itemView.setOnClickListener {
             RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                 .document(room.name!!)
-                .update("user2", UserRepository.me)
+                .update("user2", UserRepository.me.name)
                 .addOnSuccessListener {
                     Toast.makeText(
                         holder.itemView.context,
@@ -93,6 +94,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
                     holder.itemView.context.startActivity(intent)
                 }
                 .addOnFailureListener { e ->
+                    Log.d("RoomListAdapter", "Error joining room: ", e)
                     Toast.makeText(
                         holder.itemView.context,
                         "Failed to join room",
@@ -103,6 +105,6 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
     }
 
     override fun getItemCount(): Int {
-        return roomList.size - 1
+        return roomList.size
     }
 }
