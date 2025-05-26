@@ -55,6 +55,14 @@ class RoomListActivity : ComponentActivity() {
             }
         }
     }
+
+    fun checkMatching() {
+        lifecycleScope.launch {
+            val roomList = RoomRepository.getRooms()
+            Log.d("RoomListActivity", "Checking matching: $roomList")
+            roomListRecyclerView.adapter = RoomListAdapter(roomList, this@RoomListActivity)
+        }
+    }
 }
 
 class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) : RecyclerView.Adapter<RoomListAdapter.RoomViewHolder>() {
@@ -80,7 +88,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         holder.itemView.setOnClickListener {
             RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                 .document(room.name!!)
-                .update("user2", UserRepository.me.name)
+                .update("user2", UserRepository.me.id)
                 .addOnSuccessListener {
                     Toast.makeText(
                         holder.itemView.context,
