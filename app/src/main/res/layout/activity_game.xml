@@ -11,21 +11,35 @@
         android:alpha="0"
         android:scaleType="fitCenter" />
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:id="@+id/seekBar"
-        android:layout_gravity="center" />
     <ImageView
         android:id="@+id/enemy"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="top"
         android:background="@color/black" />
+
     <ImageView
         android:id="@+id/player"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="bottom"
         android:background="@color/black" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/enemy_hp_bar"
+        android:max="100"
+        android:progress="100"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_gravity="top" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/player_hp_bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:max="100"
+        android:progress="100"
+        android:layout_gravity="bottom" />
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.dudoji.tangvivor.game.service
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.dudoji.tangvivor.game.entity.Master
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 open class PlayerController(val master: Master, val player: ImageView, val frameLayout: FrameLayout, val sessionId: String) {
@@ -30,5 +31,11 @@ open class PlayerController(val master: Master, val player: ImageView, val frame
         db.collection("sessions")
             .document(sessionId)
             .update(if (master == Master.User1) "user1X" else "user2X", x)
+    }
+
+    fun onAttacked(damage: Long) {
+        db.collection("sessions")
+            .document(sessionId)
+            .update(if (master == Master.User1) "user1Hp" else "user2Hp", FieldValue.increment(-damage))
     }
 }
