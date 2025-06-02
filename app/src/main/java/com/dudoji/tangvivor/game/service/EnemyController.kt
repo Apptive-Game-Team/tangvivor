@@ -8,14 +8,12 @@ import com.dudoji.tangvivor.game.entity.Session
 val TEST_SESSION_ID = "CR6vF7GlvPWvAHOJolJs"
 
 class EnemyController : PlayerController {
-    val session_id: String
-    constructor(master: Master, player: ImageView, frameLayout: FrameLayout, roomName: String) : super(master, player, frameLayout) {
-        this.session_id = roomName
-    }
+
+    constructor(master: Master, player: ImageView, frameLayout: FrameLayout, roomName: String) : super(master, player, frameLayout, roomName) { }
 
     fun update() {
         db.collection("sessions")
-            .document(TEST_SESSION_ID)
+            .document(sessionId)
             .get()
             .addOnSuccessListener { document ->
                 val session = document.toObject(Session::class.java)
