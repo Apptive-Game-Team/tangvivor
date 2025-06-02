@@ -3,44 +3,49 @@ package com.dudoji.tangvivor
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.dudoji.tangvivor.matching.activity.RoomListActivity
 import com.dudoji.tangvivor.matching.entity.User
 import com.dudoji.tangvivor.repository.UserRepository
-import com.google.android.gms.games.GamesSignInClient
 import com.google.android.gms.games.PlayGames
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    lateinit var loginButton: ImageButton
+    val gamesSignInClient by lazy {
+        PlayGames.getGamesSignInClient(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loginButton = findViewById(R.id.login_button)
+        checkSignInStatus()
+    }
+
+    private fun checkSignInStatus() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this);
-        gamesSignInClient.isAuthenticated.addOnCompleteListener{
-            if (it.isSuccessful && it.result.isAuthenticated) {
+        gamesSignInClient.isAuthenticated.addOnCompleteListener { task ->
+            if (task.isSuccessful && task.result.isAuthenticated) {
                 onSignInSuccess()
             } else {
-                gamesSignInClient.signIn().addOnCompleteListener { signInTask ->
-                    if (signInTask.isSuccessful && signInTask.result.isAuthenticated) {
-                        onSignInSuccess()
-                    } else {
-                        signInTask.exception?.let { exception ->
-                            exception.printStackTrace()
-                        }
-                    }
+                Log.d("MainActivity", "User is not authenticated")
+                signIn()
+            }
+        }.addOnFailureListener { e ->
+            e.printStackTrace()
+        }
+    }
+
+    private fun signIn() {
+        gamesSignInClient.signIn().addOnCompleteListener { signInTask ->
+            if (signInTask.isSuccessful && signInTask.result.isAuthenticated) {
+                onSignInSuccess()
+            } else {
+                signInTask.exception?.let { exception ->
+                    exception.printStackTrace()
                 }
             }
-        }
-
-        loginButton.setOnClickListener {
-            val intent = Intent(this, RoomListActivity::class.java)
-            startActivity(intent)
         }
     }
 

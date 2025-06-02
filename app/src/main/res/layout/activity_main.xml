@@ -12,12 +12,4 @@
         android:text="Tangvivor"
         android:layout_marginVertical="100dp"
         android:textSize="60sp"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="login"
-        android:background="@drawable/google_login_button"
-        android:id="@+id/login_button"/>
-
 </LinearLayout>
