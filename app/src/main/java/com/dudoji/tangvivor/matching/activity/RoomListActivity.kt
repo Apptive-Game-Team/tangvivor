@@ -27,7 +27,7 @@ class RoomListActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_list)
 
-        findViewById<TextView>(R.id.my_name).text = UserRepository.me.name
+        findViewById<TextView>(R.id.my_name).text = UserRepository.me?.name
 
         roomListRecyclerView = findViewById(R.id.room_list_recycler_view)
         roomListRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
@@ -93,7 +93,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         holder.itemView.setOnClickListener {
             RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                 .document(room.name!!)
-                .update("user2", UserRepository.me.id)
+                .update("user2", UserRepository.me?.id)
                 .addOnSuccessListener {
                     Toast.makeText(
                         holder.itemView.context,
