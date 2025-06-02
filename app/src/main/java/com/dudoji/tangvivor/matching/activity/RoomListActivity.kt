@@ -28,10 +28,9 @@ class RoomListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_list)
-
         findViewById<ImageButton>(R.id.leader_board_button).setOnClickListener{
             PlayGames.getLeaderboardsClient(this)
-                .getLeaderboardIntent("Score")
+                .getLeaderboardIntent(getString(R.string.score_leaderboard_id))
                 .addOnSuccessListener(this){intent ->
                     startActivityForResult(intent, 1001)
                 }
