@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import com.dudoji.tangvivor.repository.GameRepository
 import com.dudoji.tangvivor.repository.RoomRepository
 import com.dudoji.tangvivor.repository.UserRepository
 import kotlinx.coroutines.launch
+import com.google.android.gms.games.PlayGames
 
 class RoomListActivity : ComponentActivity() {
     lateinit var roomListRecyclerView: RecyclerView
@@ -26,6 +28,18 @@ class RoomListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_list)
+
+        findViewById<ImageButton>(R.id.leader_board_button).setOnClickListener{
+            PlayGames.getLeaderboardsClient(this)
+                .getLeaderboardIntent("Score")
+                .addOnSuccessListener(this){intent ->
+                    startActivityForResult(intent, 1001)
+                }
+                .addOnFailureListener(this) { e ->
+                    Log.e("RoomListActivity", "Failed to get leaderboard intent", e)
+                    Toast.makeText(this, "Failed to open leaderboard", Toast.LENGTH_SHORT).show()
+                }
+        }
 
         findViewById<TextView>(R.id.my_name).text = UserRepository.me?.name
 
