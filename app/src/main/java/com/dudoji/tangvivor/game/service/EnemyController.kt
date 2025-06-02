@@ -11,17 +11,9 @@ class EnemyController : PlayerController {
 
     constructor(master: Master, player: ImageView, frameLayout: FrameLayout, roomName: String) : super(master, player, frameLayout, roomName) { }
 
-    fun update() {
-        db.collection("sessions")
-            .document(sessionId)
-            .get()
-            .addOnSuccessListener { document ->
-                val session = document.toObject(Session::class.java)
-                if (session != null) {
-                    updateViewX(
-                        if (master == Master.User1) session.user1X else session.user2X
-                    )
-                }
-            }
+    fun update(session: Session) {
+        updateViewX(
+            if (master == Master.User1) session.user1X else session.user2X
+        )
     }
 }

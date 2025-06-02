@@ -11,10 +11,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.camera.OnFacePositionListener
 import com.dudoji.tangvivor.game.entity.Master
+import com.dudoji.tangvivor.game.entity.Session
 import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.FaceDetector
 import com.dudoji.tangvivor.game.service.GameLoop
 import com.dudoji.tangvivor.game.service.PlayerController
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.properties.Delegates
 
 class GameActivity : ComponentActivity(), OnFacePositionListener {
@@ -26,8 +28,10 @@ class GameActivity : ComponentActivity(), OnFacePositionListener {
     // Camera Setting
     private lateinit var previewView: PreviewView
     private lateinit var faceDetector: FaceDetector
+    private lateinit var sessionId: String
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
+    val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,22 +47,33 @@ class GameActivity : ComponentActivity(), OnFacePositionListener {
         )
         
         me = intent.getIntExtra("me", -1)
+        sessionId = intent.getStringExtra("roomName")!!
+
         playerController = PlayerController(
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.player),
-            findViewById(R.id.game_frame_layout)
+            findViewById(R.id.game_frame_layout),
+            sessionId
         )
 
         enemyController = EnemyController(
             if (me == 2) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.enemy),
             findViewById(R.id.game_frame_layout),
-            intent.getStringExtra("roomName")!!
+            sessionId
         )
 
         setSeekBar()
         gameLoop.startGameLoop {
-            enemyController.update()
+            db.collection("sessions")
+                .document(sessionId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val session = document.toObject(Session::class.java)
+                    if (session != null) {
+                        enemyController.update(session)
+                    }
+                }
         }
     }
 
