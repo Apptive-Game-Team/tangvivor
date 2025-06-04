@@ -48,6 +48,7 @@ dependencies {
 
     // Jetpack
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
 
     // oauth
     implementation ("com.google.gms:google-services:4.3.15")
@@ -67,6 +68,7 @@ dependencies {
     // ML Kit Face Detection
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
 
+    // Nearby Connections
     implementation("com.google.android.gms:play-services-nearby:19.3.0")
 
     implementation(libs.androidx.core.ktx)
@@ -78,6 +80,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
