@@ -14,7 +14,7 @@ object RoomRepository {
 
     fun createRoom(roomName: String, activity: ComponentActivity) {
         activity.lifecycleScope.launch{
-            val room = Room(name = roomName, user1 = UserRepository.me.id, user2 = "")
+            val room = Room(name = roomName, user1 = UserRepository.me?.id, user2 = "")
             db.collection(COLLECTION_NAME).document(roomName).set(room).addOnSuccessListener { documentReference ->
                 Toast.makeText(activity, "Room created with ID", Toast.LENGTH_SHORT).show()
             }.addOnFailureListener { e ->

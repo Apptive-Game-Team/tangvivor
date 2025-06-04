@@ -8,23 +8,8 @@ object UserRepository {
     val COLLECTION_NAME = "users"
     val db = FirebaseFirestore.getInstance()
 
-    lateinit var me: User
-    lateinit var enemy: User
-    val emptyUser: User = User()
-
-    suspend fun login(loginText: String): User {
-        me = db.collection(COLLECTION_NAME)
-            .document(loginText)
-            .get()
-            .await()
-            .toObject(User::class.java) ?: throw Exception("사용자 없음")
-        me.id = loginText
-        return me
-    }
-
-    fun setEnemyUser(user: User) {
-        enemy = user
-    }
+    var me: User? = null
+    var enemy: User? = null
 
     suspend fun getUser(text: String): User {
         return db.collection(COLLECTION_NAME)
@@ -35,11 +20,21 @@ object UserRepository {
     }
 
     suspend fun saveUser(user: User): Boolean {
-        return try {
-            db.collection(COLLECTION_NAME).add(user).await()
-            true
-        } catch (e: Exception) {
-            false
+        val already = db.collection(COLLECTION_NAME)
+            .document(user.id!!)
+            .get()
+            .await()
+            .exists()
+        if (!already) {
+            return try {
+                db.collection(COLLECTION_NAME)
+                    .document(user.id!!)
+                    .set(user).await()
+                true
+            } catch (e: Exception) {
+                false
+            }
         }
+        return false
     }
 }
