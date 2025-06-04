@@ -12,6 +12,7 @@ import com.google.android.gms.nearby.connection.ConnectionsStatusCodes
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
+import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
 
@@ -24,7 +25,7 @@ class NearbyController(val context: Context,
     val connectedEndpointIds: MutableList<String> = mutableListOf()
     val discoveredEndpointIds : MutableList<String> = mutableListOf()
 
-    val endpointDiscoveryCallback: EndpointDiscoveryCallback =
+    private val endpointDiscoveryCallback: EndpointDiscoveryCallback =
     object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(
             endpointId: String,
@@ -39,7 +40,7 @@ class NearbyController(val context: Context,
         }
     };
 
-    val connectionLifecycleCallback: ConnectionLifecycleCallback =
+    private val connectionLifecycleCallback: ConnectionLifecycleCallback =
     object : ConnectionLifecycleCallback() {
 
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
@@ -85,6 +86,19 @@ class NearbyController(val context: Context,
             }
     }
 
+    fun sendPayload(endpointId: String, payload: Payload) {
+        Nearby.getConnectionsClient(context)
+            .sendPayload(endpointId, payload)
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+            }
+    }
+
+    fun disconnectFromEndpoint(endpointId: String) {
+        Nearby.getConnectionsClient(context)
+            .disconnectFromEndpoint(endpointId)
+        connectedEndpointIds.remove(endpointId)
+    }
 
     fun startAdvertising() {
         val userId = requireNotNull(UserRepository.me?.id) { "Authentication not initialized" }
