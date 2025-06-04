@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.json.JSONObject
 
-class NearbyUserController(context: Context) {
+class NearbyUserController(val context: Context,
+                           onDiscoverChanged: () -> Unit) {
     val nearbyController: NearbyController
 
     init {
@@ -33,7 +34,8 @@ class NearbyUserController(context: Context) {
                         dialog.dismiss()
                     }
                     .show()
-            }
+            },
+            onDiscoverChanged
         )
     }
 
