@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.camera.view.PreviewView
+import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.camera.OnFacePositionListener
 import com.dudoji.tangvivor.game.entity.Master
@@ -16,7 +17,7 @@ import com.dudoji.tangvivor.game.service.PlayerController
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.properties.Delegates
 
-class GameActivity : ComponentActivity(), OnFacePositionListener {
+class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     lateinit var playerController : PlayerController
     lateinit var enemyController : EnemyController
 
@@ -34,7 +35,7 @@ class GameActivity : ComponentActivity(), OnFacePositionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
+        setChildContent(R.layout.activity_game)
 
         // Camera Setting
         previewView = findViewById(R.id.previewView)
