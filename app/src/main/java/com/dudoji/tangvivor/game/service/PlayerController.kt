@@ -1,16 +1,14 @@
 package com.dudoji.tangvivor.game.service
 
-import android.R.attr.x
-import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.dudoji.tangvivor.game.entity.Master
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
-open class PlayerController(val master: Master, val player: ImageView, val frameLayout: FrameLayout) {
+open class PlayerController(val master: Master, val player: ImageView, val frameLayout: FrameLayout, val sessionId: String) {
     var frameWidth : Int = 0
     var playerWidth : Int = 0
-
     val db = FirebaseFirestore.getInstance()
 
     init {
@@ -31,7 +29,13 @@ open class PlayerController(val master: Master, val player: ImageView, val frame
         updateViewX(x)
 
         db.collection("sessions")
-            .document(TEST_SESSION_ID)
+            .document(sessionId)
             .update(if (master == Master.User1) "user1X" else "user2X", x)
+    }
+
+    fun onAttacked(damage: Long) {
+        db.collection("sessions")
+            .document(sessionId)
+            .update(if (master == Master.User1) "user1Hp" else "user2Hp", FieldValue.increment(-damage))
     }
 }

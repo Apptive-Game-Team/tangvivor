@@ -1,5 +1,6 @@
 package com.dudoji.tangvivor.repository
 
+import com.dudoji.tangvivor.game.entity.Session
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -9,7 +10,7 @@ object GameRepository {
 
     suspend fun saveGame(name: String): Boolean {
         return try {
-            db.collection(COLLECTION_NAME).document(name).set(mapOf("user1X" to 0.5f, "user2X" to 0.5f)).await()
+            db.collection(COLLECTION_NAME).document(name).set(Session()).await()
             true
         } catch (e: Exception) {
             false
