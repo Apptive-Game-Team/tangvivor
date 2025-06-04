@@ -3,6 +3,7 @@ package com.dudoji.tangvivor.repository
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
+import com.dudoji.tangvivor.BaseDrawerActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.dudoji.tangvivor.matching.entity.Room
 import kotlinx.coroutines.launch
@@ -12,7 +13,7 @@ object RoomRepository {
     val COLLECTION_NAME = "matchings"
     val db = FirebaseFirestore.getInstance()
 
-    fun createRoom(roomName: String, activity: ComponentActivity) {
+    fun createRoom(roomName: String, activity: BaseDrawerActivity) {
         activity.lifecycleScope.launch{
             val room = Room(name = roomName, user1 = UserRepository.me?.id, user2 = "")
             db.collection(COLLECTION_NAME).document(roomName).set(room).addOnSuccessListener { documentReference ->
