@@ -10,6 +10,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Tangvivor"
-        android:layout_marginVertical="100dp"
+
         android:textSize="60sp"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/tangvivor_logo"/>
+
+
 </LinearLayout>
