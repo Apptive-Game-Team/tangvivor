@@ -1,7 +1,6 @@
 package com.dudoji.tangvivor.matching.activity
 
 import RoomListAdapter
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -9,12 +8,10 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.R
-import com.dudoji.tangvivor.game.GameActivity
 import com.dudoji.tangvivor.repository.GameRepository
 import com.dudoji.tangvivor.repository.RoomRepository
 import com.dudoji.tangvivor.repository.UserRepository
@@ -51,10 +48,7 @@ class RoomListActivity : BaseDrawerActivity() {
                 lifecycleScope.launch {
                     RoomRepository.createRoom(roomName, this@RoomListActivity)
                     GameRepository.saveGame(roomName)
-                    val intent = Intent(this@RoomListActivity, GameActivity::class.java)
-                    intent.putExtra("roomName", roomName)
-                    intent.putExtra("me", 1)
-                    startActivity(intent)
+                    GameRepository.enterGame(roomName, this@RoomListActivity, 1)
                 }
             }
         }

@@ -1,5 +1,8 @@
 package com.dudoji.tangvivor.repository
 
+import android.content.Intent
+import com.dudoji.tangvivor.BaseDrawerActivity
+import com.dudoji.tangvivor.game.GameActivity
 import com.dudoji.tangvivor.game.entity.Session
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -7,6 +10,8 @@ import kotlinx.coroutines.tasks.await
 object GameRepository {
     val db = FirebaseFirestore.getInstance()
     val COLLECTION_NAME = "sessions"
+    var isInGame: Boolean = false
+    var currentSessionId: String = ""
 
     suspend fun saveGame(name: String): Boolean {
         return try {
@@ -15,5 +20,20 @@ object GameRepository {
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun enterGame(roomName: String, activity: BaseDrawerActivity, me: Int) {
+        isInGame = true
+        currentSessionId = roomName
+        val intent = Intent(activity, GameActivity::class.java)
+        intent.putExtra("roomName", roomName)
+        intent.putExtra("me", me)
+        activity.startActivity(intent)
+    }
+
+    fun quitGame() {
+        isInGame = false
+        currentSessionId = ""
+        // TODO: Implement game quitting logic
     }
 }

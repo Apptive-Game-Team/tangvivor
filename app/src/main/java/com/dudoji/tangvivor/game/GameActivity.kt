@@ -14,6 +14,7 @@ import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.FaceDetector
 import com.dudoji.tangvivor.game.service.GameLoop
 import com.dudoji.tangvivor.game.service.PlayerController
+import com.dudoji.tangvivor.repository.GameRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.properties.Delegates
 
@@ -103,5 +104,12 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     override fun onPause() {
         super.onPause()
         faceDetector.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        gameLoop.stopGameLoop()
+        faceDetector.stop()
+        GameRepository.quitGame()
     }
 }

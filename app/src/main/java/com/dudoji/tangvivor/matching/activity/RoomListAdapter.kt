@@ -1,4 +1,3 @@
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -6,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.matching.activity.RoomListActivity
 import com.dudoji.tangvivor.matching.entity.Room
+import com.dudoji.tangvivor.repository.GameRepository
 import com.dudoji.tangvivor.repository.RoomRepository
 import com.dudoji.tangvivor.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -43,10 +43,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
                     RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                         .document(room.name!!)
                         .delete()
-                    val intent = Intent(holder.itemView.context, com.dudoji.tangvivor.game.GameActivity::class.java)
-                    intent.putExtra("roomName", room.name)
-                    intent.putExtra("me", 2)
-                    holder.itemView.context.startActivity(intent)
+                    GameRepository.enterGame(room.name!!, activity, 2)
                 }
                 .addOnFailureListener { e ->
                     Log.d("RoomListAdapter", "Error joining room: ", e)
