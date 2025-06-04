@@ -1,7 +1,7 @@
 package com.dudoji.tangvivor.repository
 
+import android.content.Context
 import android.content.Intent
-import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.game.GameActivity
 import com.dudoji.tangvivor.game.entity.Session
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,13 +22,13 @@ object GameRepository {
         }
     }
 
-    fun enterGame(roomName: String, activity: BaseDrawerActivity, me: Int) {
+    fun enterGame(roomName: String, context: Context, me: Int) {
         isInGame = true
         currentSessionId = roomName
-        val intent = Intent(activity, GameActivity::class.java)
+        val intent = Intent(context, GameActivity::class.java)
         intent.putExtra("roomName", roomName)
         intent.putExtra("me", me)
-        activity.startActivity(intent)
+        context.startActivity(intent)
     }
 
     fun quitGame() {

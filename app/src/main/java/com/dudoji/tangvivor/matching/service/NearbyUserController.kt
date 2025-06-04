@@ -2,7 +2,10 @@ package com.dudoji.tangvivor.matching.service
 
 import com.dudoji.tangvivor.repository.UserRepository
 import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.matching.entity.User
+import com.dudoji.tangvivor.repository.GameRepository
 import com.google.android.gms.nearby.connection.Payload
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
@@ -19,6 +22,17 @@ class NearbyUserController(context: Context) {
                 val userId = jsonObject.getString("userId")
                 val sessionId = jsonObject.getString("sessionId")
                 UserRepository.setEnemy(userId)
+                AlertDialog.Builder(context)
+                    .setTitle("초대")
+                    .setMessage("${userId}님이 초대하였습니다. 방에 참여하시겠습니까?")
+                    .setPositiveButton("확인") { dialog, _ ->
+                        GameRepository.enterGame(sessionId, context as BaseDrawerActivity, 2)
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("취소") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }
         )
     }
