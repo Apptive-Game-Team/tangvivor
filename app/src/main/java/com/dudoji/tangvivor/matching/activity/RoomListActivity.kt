@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.GameActivity
 import com.dudoji.tangvivor.repository.GameRepository
@@ -20,14 +21,14 @@ import com.dudoji.tangvivor.repository.UserRepository
 import kotlinx.coroutines.launch
 import com.google.android.gms.games.PlayGames
 
-class RoomListActivity : ComponentActivity() {
+class RoomListActivity : BaseDrawerActivity() {
     lateinit var roomListRecyclerView: RecyclerView
     lateinit var reloadButton: Button
     lateinit var createRoomButton: Button
     lateinit var roomNameEdit: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_room_list)
+        setChildContent(R.layout.activity_room_list)
         findViewById<ImageButton>(R.id.leader_board_button).setOnClickListener{
             openLeaderboard()
         }

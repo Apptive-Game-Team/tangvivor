@@ -11,14 +11,14 @@ import com.dudoji.tangvivor.repository.UserRepository
 import com.google.android.gms.games.PlayGames
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseDrawerActivity() {
     val gamesSignInClient by lazy {
         PlayGames.getGamesSignInClient(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setChildContent(R.layout.activity_main)
 
         checkSignInStatus()
     }
