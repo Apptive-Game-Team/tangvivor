@@ -17,7 +17,7 @@ import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
 
 class NearbyController(val context: Context,
-                       private val payloadCallback: PayloadCallback) {
+                       private val payloadCallback: PayloadCallback, val onDiscoverChanged: () -> Unit) {
     companion object {
         private val SERVICE_ID = "com.dudoji.tangvivor.matching"
     }
@@ -32,11 +32,13 @@ class NearbyController(val context: Context,
             p1: DiscoveredEndpointInfo
         ) {
             discoveredEndpointIds.add(endpointId)
+            onDiscoverChanged()
         }
 
         override fun onEndpointLost(endpointId: String) {
             Log.d("NearbyController", "Endpoint lost: $endpointId")
             discoveredEndpointIds.remove(endpointId)
+            onDiscoverChanged()
         }
     };
 
