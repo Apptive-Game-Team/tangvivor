@@ -11,6 +11,23 @@ object UserRepository {
     var me: User? = null
     var enemy: User? = null
 
+    fun setEnemy(userId: String) {
+        db.collection(COLLECTION_NAME)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    enemy = document.toObject(User::class.java)
+                } else {
+                    enemy = null
+                }
+            }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+                enemy = null
+            }
+    }
+
     suspend fun getUser(text: String): User {
         return db.collection(COLLECTION_NAME)
             .document(text)

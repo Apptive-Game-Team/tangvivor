@@ -3,7 +3,6 @@ package com.dudoji.tangvivor
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.dudoji.tangvivor.matching.activity.RoomListActivity
 import com.dudoji.tangvivor.matching.entity.User
