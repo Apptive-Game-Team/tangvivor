@@ -46,6 +46,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
+    // Jetpack
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     // oauth
@@ -66,6 +67,7 @@ dependencies {
     // ML Kit Face Detection
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
 
+    implementation("com.google.android.gms:play-services-nearby:19.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
