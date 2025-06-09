@@ -43,6 +43,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
+    val sessionSaver: Session = Session(0f, 0f, 0f, 0f)
 
     // blink Variable
     private var isBlinking = false
@@ -115,6 +116,9 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         enemyController.update(session)
                         enemyPoint.update(session)
                         updateHpBars(session)
+                        db.collection("sessions")
+                            .document(sessionId)
+                            .set(sessionSaver)
                     }
                 }
         }
@@ -133,13 +137,13 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     // Camera Function
     override fun onFacePosition(normX: Float) {
         runOnUiThread {
-            playerController.setX(normX)
+            playerController.setX(normX, sessionSaver)
         }
     }
 
     private fun onPoseDetected(normX: Float) {
         runOnUiThread {
-            playerPoint.setX(normX)
+            playerPoint.setX(normX, sessionSaver)
         }
     }
 

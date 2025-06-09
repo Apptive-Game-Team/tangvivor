@@ -4,6 +4,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dudoji.tangvivor.game.entity.Master
+import com.dudoji.tangvivor.game.entity.Session
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -26,18 +27,30 @@ open class PlayerController(val master: Master, val player: ImageView, val const
     }
 
     // x range (0, 1)
-    fun setX(x: Float) {
+    fun setX(x: Float, sessionSaver: Session) {
         updateViewX(x)
 
         if (isPointer) {
-            db.collection("sessions")
-                .document(sessionId)
-                .update(if (master == Master.User1) "user1Point" else "user2Point", x)
+            when (master) {
+                Master.User1 ->
+                    sessionSaver.user1Point = x
+                Master.User2 ->
+                    sessionSaver.user2Point = x
+            }
+//            db.collection("sessions")
+//                .document(sessionId)
+//                .update(if (master == Master.User1) "user1Point" else "user2Point", x)
         }
         else {
-            db.collection("sessions")
-                .document(sessionId)
-                .update(if (master == Master.User1) "user1X" else "user2X", x)
+            when (master) {
+                Master.User1 ->
+                    sessionSaver.user1X = x
+                Master.User2 ->
+                    sessionSaver.user2X = x
+            }
+//            db.collection("sessions")
+//                .document(sessionId)
+//                .update(if (master == Master.User1) "user1X" else "user2X", x)
         }
     }
 
