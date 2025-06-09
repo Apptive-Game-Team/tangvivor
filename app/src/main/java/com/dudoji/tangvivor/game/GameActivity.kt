@@ -131,7 +131,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         updateHpBars(session)
                         db.collection("sessions")
                             .document(sessionId)
-                            .update(sessionSaver.toMap())
+                            .update(sessionSaver.toMap(session))
 
                     }
                 }
