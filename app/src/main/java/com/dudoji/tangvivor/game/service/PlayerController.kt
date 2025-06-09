@@ -7,7 +7,7 @@ import com.dudoji.tangvivor.game.entity.Master
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
-open class PlayerController(val master: Master, val player: ImageView, val constraintLayout: ConstraintLayout, val sessionId: String) {
+open class PlayerController(val master: Master, val player: ImageView, val constraintLayout: ConstraintLayout, val sessionId: String, val isPointer: Boolean) {
     var frameWidth : Int = 0
     var playerWidth : Int = 0
     val db = FirebaseFirestore.getInstance()
@@ -29,9 +29,16 @@ open class PlayerController(val master: Master, val player: ImageView, val const
     fun setX(x: Float) {
         updateViewX(x)
 
-        db.collection("sessions")
-            .document(sessionId)
-            .update(if (master == Master.User1) "user1X" else "user2X", x)
+        if (isPointer) {
+            db.collection("sessions")
+                .document(sessionId)
+                .update(if (master == Master.User1) "user1Point" else "user2Point", x)
+        }
+        else {
+            db.collection("sessions")
+                .document(sessionId)
+                .update(if (master == Master.User1) "user1X" else "user2X", x)
+        }
     }
 
     fun onAttacked(damage: Long) {

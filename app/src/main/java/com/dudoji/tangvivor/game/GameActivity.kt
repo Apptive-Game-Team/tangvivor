@@ -2,6 +2,7 @@ package com.dudoji.tangvivor.game
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
@@ -19,7 +20,10 @@ import com.dudoji.tangvivor.repository.GameRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
+import kotlinx.coroutines.*
 
 class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     lateinit var playerController : PlayerController
@@ -40,6 +44,9 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
 
+    // blink Variable
+    private var isBlinking = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setChildContent(R.layout.activity_game)
@@ -51,14 +58,16 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.player),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            false
         )
 
         playerPoint = PlayerController(
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.playerPointer),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            true
         )
 
         // Camera Setting
@@ -84,14 +93,16 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             if (me == 2) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.enemy),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            false
         )
 
         enemyPoint = EnemyController(
             if (me == 2) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.enemyPointer),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            true
         )
 
         gameLoop.startGameLoop {
@@ -148,6 +159,26 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             playerPointY >= enemyY && playerPointY + playerPointHeight <= enemyY + enemyHeight
         ) {
             enemyController.onAttacked(10L);
+            hitBlinkImageView(enemyController.player)
+        }
+    }
+
+    private fun hitBlinkImageView(imageView: ImageView) {
+        if (isBlinking) return
+        isBlinking = true;
+        GlobalScope.launch {
+            val endTime = System.currentTimeMillis() + 1000
+
+            var isVisible = true
+
+            while (System.currentTimeMillis() < endTime) {
+                imageView.visibility = if (isVisible) View.VISIBLE else View.VISIBLE
+                isVisible = !isVisible
+                delay(100)  // 500ms마다 깜빡이기 (1초 동안 2번 깜빡임)
+            }
+
+            imageView.visibility = View.VISIBLE
+            isBlinking = false
         }
     }
 
