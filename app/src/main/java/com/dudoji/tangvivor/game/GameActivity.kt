@@ -126,7 +126,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         db.collection("sessions")
                             .document(sessionId)
                             .update(sessionSaver.toMap(session))
-
+                        sessionSaver.toSetHp()
                     }
                 }
         }

@@ -6,25 +6,26 @@ import com.dudoji.tangvivor.DEFAULT_HP
 data class Session(var user1X: Float, var user2X: Float, var user1Point: Float, var user2Point: Float, var user1Hp: Int = DEFAULT_HP , var user2Hp: Int = DEFAULT_HP, ) {
     constructor() : this(0.5f, 0.5f, 0.5f, 0.5f)
 
-    constructor(master: Master) : this() {
-        when (master) {
-            Master.User1 -> {
-                user1X = 0.5f
-                user2X = -1f
-                user1Point = 0.5f
-                user2Point = -1f
-                user1Hp = -1
-                user2Hp = -1
-            }
-            Master.User2 -> {
-                user1X = -1f
-                user2X = 0.5f
-                user1Point = -1f
-                user2Point = 0.5f
-                user1Hp = -1
-                user2Hp = -1
-            }
-        }
+    constructor(master: Master) : this(-1f, -1f,-1f,-1f, -1, -1) {
+//        when (master) {
+//            Master.User1 -> {
+//                user1X = 0.5f
+//                user2X = -1f
+//                user1Point = 0.5f
+//                user2Point = -1f
+//                user1Hp = -1
+//                user2Hp = -1
+//            }
+//            Master.User2 -> {
+//                user1X = -1f
+//                user2X = 0.5f
+//                user1Point = -1f
+//                user2Point = 0.5f
+//                user1Hp = -1
+//                user2Hp = -1
+//            }
+//        }
+
     }
 
     fun toMap(session: Session) : Map<String, Any> {
@@ -38,5 +39,10 @@ data class Session(var user1X: Float, var user2X: Float, var user1Point: Float, 
         if (user2Hp != -1) map["user2Hp"] = user2Hp + session.user2Hp
 
         return map
+    }
+
+    fun toSetHp() {
+        user1Hp = -1
+        user2Hp = -1
     }
 }
