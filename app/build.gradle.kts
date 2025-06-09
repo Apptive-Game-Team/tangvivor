@@ -46,7 +46,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
+    // Jetpack
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
 
     // oauth
     implementation ("com.google.gms:google-services:4.3.15")
@@ -66,11 +68,11 @@ dependencies {
     // ML Kit Face Detection
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
     implementation("com.google.mlkit:pose-detection:17.0.0")
-
+    
     implementation("com.google.mediapipe:tasks-vision:0.20230731")
-//    implementation("com.google.mediapipe:solution-core:0.10.20")
-//    implementation("com.google.mediapipe:facemesh:0.10.20")
-//    implementation("com.google.mediapipe:hands:0.10.20")
+
+    // Nearby Connections
+    implementation("com.google.android.gms:play-services-nearby:19.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -81,6 +83,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
