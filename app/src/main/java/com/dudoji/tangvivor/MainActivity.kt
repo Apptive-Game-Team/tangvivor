@@ -53,7 +53,8 @@ class MainActivity : BaseDrawerActivity() {
             val user = User(
                 player.playerId,
                 player.displayName,
-                0
+                0,
+                player.iconImageUri
             )
             lifecycleScope.launch {
                 Log.d("MainActivity", "User signed in: $user")
