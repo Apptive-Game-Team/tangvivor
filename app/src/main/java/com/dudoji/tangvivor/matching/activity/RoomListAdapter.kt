@@ -27,7 +27,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         val room = roomList[position]
         holder.nameTextView.text = room.name
         activity.lifecycleScope.launch {
-            holder.makerTextView.text = UserRepository.getUser(room.user1!!).name
+            holder.makerTextView.text = UserRepository.getUser(room.user1?: throw RuntimeException("")).name
         }
 
         holder.itemView.setOnClickListener {
