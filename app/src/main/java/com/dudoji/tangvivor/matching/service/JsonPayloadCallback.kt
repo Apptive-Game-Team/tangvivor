@@ -13,15 +13,17 @@ class JsonPayloadCallback(val receiveCallback: (JSONObject) -> Unit): PayloadCal
         endpointId: String,
         payload: Payload
     ) {
+        Log.d("NearbySystem", "Payload received from endpoint: $endpointId")
         val receivedBytes = payload.asBytes()
         val jsonStr = receivedBytes?.let { String(it) }
+        Log.d("NearbySystem", "Received bytes: $jsonStr")
         if (jsonStr != null) {
             try {
                 val jsonObject = JSONObject(jsonStr)
-                Log.d("MatchingPayloadCallback", "Received JSON: $jsonObject")
+                Log.d("NearbySystem", "Received JSON: $jsonObject")
                 receiveCallback(jsonObject)
             } catch (e: JSONException) {
-                Log.e("MatchingPayloadCallback", "Failed to parse JSON: $jsonStr", e)
+                Log.e("NearbySystem", "Failed to parse JSON: $jsonStr", e)
             }
         } else {
             Log.e("MatchingPayloadCallback", "Received payload is null or not a valid byte array.")

@@ -44,6 +44,8 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
 
+
+
     // blink Variable
     private var isBlinking = false
 
@@ -115,6 +117,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         enemyController.update(session)
                         enemyPoint.update(session)
                         updateHpBars(session)
+
                     }
                 }
         }

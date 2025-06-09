@@ -21,9 +21,10 @@ class NearbyUserController(val context: Context,
         nearbyController = NearbyController(
             context,
             JsonPayloadCallback { jsonObject ->
-                val userId = jsonObject.getString("userId")
+                val userId = jsonObject.getString("inviter")
                 val sessionId = jsonObject.getString("sessionId")
                 UserRepository.setEnemy(userId)
+                Log.d("NearbySystem", "Received invite from user: $userId for session: $sessionId")
                 AlertDialog.Builder(context)
                     .setTitle("초대")
                     .setMessage("${userId}님이 초대하였습니다. 방에 참여하시겠습니까?")
