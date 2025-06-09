@@ -1,18 +1,22 @@
 package com.dudoji.tangvivor.matching.activity
 
 import RoomListAdapter
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.repository.GameRepository
+import com.dudoji.tangvivor.repository.ImageRespository
 import com.dudoji.tangvivor.repository.RoomRepository
 import com.dudoji.tangvivor.repository.UserRepository
 import kotlinx.coroutines.launch
@@ -23,6 +27,8 @@ class RoomListActivity : BaseDrawerActivity() {
     lateinit var reloadButton: Button
     lateinit var createRoomButton: Button
     lateinit var roomNameEdit: EditText
+
+    lateinit var headImageImageView: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setChildContent(R.layout.activity_room_list)
@@ -31,6 +37,14 @@ class RoomListActivity : BaseDrawerActivity() {
         }
 
         findViewById<TextView>(R.id.my_name).text = UserRepository.me?.name
+
+        headImageImageView = findViewById(R.id.head_image)
+        headImageImageView.setOnClickListener {
+            openGallery()
+        }
+        if (ImageRespository.imageUri != null) {
+            headImageImageView.setImageURI(ImageRespository.imageUri)
+        }
 
         roomListRecyclerView = findViewById(R.id.room_list_recycler_view)
         roomListRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
@@ -72,5 +86,19 @@ class RoomListActivity : BaseDrawerActivity() {
             Log.d("MatchingSystem", "Checking matching: $roomList")
             roomListRecyclerView.adapter = RoomListAdapter(roomList, this@RoomListActivity)
         }
+    }
+
+    private val getImageFromGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                Log.d("Gallery", "Image URI: $it")
+                ImageRespository.imageUri = it
+                headImageImageView.setImageURI(it)
+            }
+        }
+
+    // 갤러리 열기 호출
+    fun openGallery() {
+        getImageFromGallery.launch("image/*")
     }
 }

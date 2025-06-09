@@ -71,6 +71,9 @@ dependencies {
     
     implementation("com.google.mediapipe:tasks-vision:0.20230731")
 
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
     // Nearby Connections
     implementation("com.google.android.gms:play-services-nearby:19.3.0")
 
@@ -84,6 +87,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

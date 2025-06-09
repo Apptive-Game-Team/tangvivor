@@ -13,21 +13,23 @@
         android:scaleType="fitCenter" />
 
     <!-- 플레이어: 화면 하단에 배치 -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/player"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@color/black"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- 적: 화면 최상단에 배치 -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/enemy"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@color/black"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -17,6 +17,7 @@ import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.GameLoop
 import com.dudoji.tangvivor.game.service.PlayerController
 import com.dudoji.tangvivor.repository.GameRepository
+import com.dudoji.tangvivor.repository.ImageRespository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
@@ -70,6 +71,10 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             sessionId,
             true
         )
+
+        if (ImageRespository.imageUri != null)
+            findViewById<ImageView>(R.id.player).setImageURI(ImageRespository.imageUri)
+
 
         // Camera Setting
         previewView = findViewById(R.id.previewView)
