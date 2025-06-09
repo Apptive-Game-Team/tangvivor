@@ -14,12 +14,18 @@ import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 
+@Deprecated("No Use")
 class FaceDetector(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val previewView: PreviewView,
     private val listener: OnFacePositionListener
 ) {
+
+    // TAG
+    companion object {
+        private val TAG = "FaceDetector"
+    }
 
     // CameraX
     private val controller = LifecycleCameraController(context).apply {

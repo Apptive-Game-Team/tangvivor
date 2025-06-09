@@ -67,6 +67,9 @@ dependencies {
 
     // ML Kit Face Detection
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
+    implementation("com.google.mlkit:pose-detection:17.0.0")
+    
+    implementation("com.google.mediapipe:tasks-vision:0.20230731")
 
     // Nearby Connections
     implementation("com.google.android.gms:play-services-nearby:19.3.0")
@@ -88,4 +91,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // layout constraint
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
 }
