@@ -39,8 +39,6 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
@@ -48,6 +46,7 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         playerListAdapter.activity = this
+        nearbyUserController.context = this
         recyclerView.adapter = playerListAdapter
 
 

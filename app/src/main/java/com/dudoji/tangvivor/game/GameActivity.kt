@@ -119,6 +119,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         db.collection("sessions")
                             .document(sessionId)
                             .set(sessionSaver)
+
                     }
                 }
         }
