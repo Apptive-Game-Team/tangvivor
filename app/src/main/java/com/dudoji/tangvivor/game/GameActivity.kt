@@ -113,6 +113,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                     val session = document.toObject(Session::class.java)
                     if (session != null) {
                         enemyController.update(session)
+                        enemyPoint.update(session)
                         updateHpBars(session)
                     }
                 }
