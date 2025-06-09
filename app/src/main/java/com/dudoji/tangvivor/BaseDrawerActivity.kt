@@ -46,6 +46,7 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         playerListAdapter.activity = this
+        nearbyUserController.context = this
         recyclerView.adapter = playerListAdapter
 
 

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.json.JSONObject
 
-class NearbyUserController(val context: Context,
+class NearbyUserController(var context: Context,
                            onDiscoverChanged: () -> Unit) {
     val nearbyController: NearbyController
 
