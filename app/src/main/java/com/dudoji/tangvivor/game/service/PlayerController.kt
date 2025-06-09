@@ -54,9 +54,12 @@ open class PlayerController(val master: Master, val player: ImageView, val const
         }
     }
 
-    fun onAttacked(damage: Long) {
-        db.collection("sessions")
-            .document(sessionId)
-            .update(if (master == Master.User1) "user1Hp" else "user2Hp", FieldValue.increment(-damage))
+    fun onAttacked(damage: Int, sessionSaver: Session) {
+        when (master) {
+            Master.User1 ->
+                sessionSaver.user1Hp -= damage
+            Master.User2 ->
+                sessionSaver.user2Hp -= damage
+        }
     }
 }

@@ -41,10 +41,11 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     private lateinit var combinedDetector: CombinedDetector
 
     private lateinit var sessionId: String
+    private lateinit var sessionSaver: Session
+
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
-    val sessionSaver: Session = Session(0f, 0f, 0f, 0f)
 
     // blink Variable
     private var isBlinking = false
@@ -111,6 +112,11 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             true
         )
 
+        sessionSaver = Session(
+            if (me == 1) Master.User1
+            else Master.User2
+        )
+
         gameLoop.startGameLoop {
             db.collection("sessions")
                 .document(sessionId)
@@ -123,7 +129,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         updateHpBars(session)
                         db.collection("sessions")
                             .document(sessionId)
-                            .set(sessionSaver)
+                            .update(sessionSaver.toMap())
 
                     }
                 }
@@ -169,7 +175,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             playerPointX >= enemyX && playerPointX + playerPointWidth <= enemyX + enemyWidth &&
             playerPointY >= enemyY && playerPointY + playerPointHeight <= enemyY + enemyHeight
         ) {
-            enemyController.onAttacked(10L);
+            enemyController.onAttacked(10, sessionSaver);
             hitBlinkImageView(enemyController.player)
         }
     }
@@ -183,12 +189,16 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             var isVisible = true
 
             while (System.currentTimeMillis() < endTime) {
-                imageView.visibility = if (isVisible) View.VISIBLE else View.VISIBLE
+                withContext(Dispatchers.Main) {
+                    imageView.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+                }
                 isVisible = !isVisible
                 delay(100)  // 500ms마다 깜빡이기 (1초 동안 2번 깜빡임)
             }
 
-            imageView.visibility = View.VISIBLE
+            withContext(Dispatchers.Main) {
+                imageView.visibility = View.VISIBLE
+            }
             isBlinking = false
         }
     }
