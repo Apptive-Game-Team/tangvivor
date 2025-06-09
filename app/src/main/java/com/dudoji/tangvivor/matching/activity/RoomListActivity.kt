@@ -61,7 +61,7 @@ class RoomListActivity : BaseDrawerActivity() {
                 startActivityForResult(intent, 1001)
             }
             .addOnFailureListener(this) { e ->
-                Log.e("RoomListActivity", "Failed to get leaderboard intent", e)
+                Log.e("MatchingSystem", "Failed to get leaderboard intent", e)
                 Toast.makeText(this, "Failed to open leaderboard", Toast.LENGTH_SHORT).show()
             }
     }
@@ -69,7 +69,7 @@ class RoomListActivity : BaseDrawerActivity() {
     fun checkMatching() {
         lifecycleScope.launch {
             val roomList = RoomRepository.getRooms()
-            Log.d("RoomListActivity", "Checking matching: $roomList")
+            Log.d("MatchingSystem", "Checking matching: $roomList")
             roomListRecyclerView.adapter = RoomListAdapter(roomList, this@RoomListActivity)
         }
     }

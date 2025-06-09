@@ -36,7 +36,7 @@ class PlayerListAdapter(var userList: List<User>) : RecyclerView.Adapter<PlayerL
         Log.d("NearbySystem", "Binding user: ${user.name} at position $position")
         holder.itemView.setOnClickListener {
             if (GameRepository.isInGame) {
-                activity?.nearbyUserController?.invite(user, GameRepository.currentSessionId)
+                BaseDrawerActivity.nearbyUserController.invite(user, GameRepository.currentSessionId)
             } else {
                 Toast.makeText(
                     activity,

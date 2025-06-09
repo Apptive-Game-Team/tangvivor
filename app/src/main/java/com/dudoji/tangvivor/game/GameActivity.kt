@@ -164,7 +164,6 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     override fun onDestroy() {
         super.onDestroy()
         gameLoop.stopGameLoop()
-        faceDetector.stop()
         GameRepository.quitGame()
     }
 }

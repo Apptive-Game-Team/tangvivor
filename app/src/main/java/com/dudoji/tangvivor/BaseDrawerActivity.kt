@@ -21,6 +21,7 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         private val playerListAdapter: PlayerListAdapter = PlayerListAdapter(
             listOf()
         )
+        lateinit var nearbyUserController: NearbyUserController
     }
 
     private lateinit var drawerLayout: DrawerLayout
@@ -38,7 +39,7 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         }
     }
 
-    lateinit var nearbyUserController: NearbyUserController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

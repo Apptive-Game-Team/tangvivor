@@ -31,6 +31,7 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         }
 
         holder.itemView.setOnClickListener {
+            Log.d("MatchingSystem", "Joining room: ${room.name}")
             RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                 .document(room.name!!)
                 .update("user2", UserRepository.me?.id)

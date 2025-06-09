@@ -25,6 +25,7 @@ class NearbyController(val context: Context,
 
     val connectedEndpoints: MutableMap<String, String> = ConcurrentHashMap()
     val discoveredEndpoints: MutableMap<String, String> = ConcurrentHashMap()
+    val userIdToEndpointId: MutableMap<String, String> = ConcurrentHashMap()
 
     private val endpointDiscoveryCallback: EndpointDiscoveryCallback =
     object : EndpointDiscoveryCallback() {
@@ -34,6 +35,7 @@ class NearbyController(val context: Context,
         ) {
             Log.d("NearbySystem", "Endpoint found: $endpointId")
             discoveredEndpoints.put(endpointId, p1.endpointName)
+            userIdToEndpointId[p1.endpointName] = endpointId
             onDiscoverChanged()
         }
 
@@ -73,14 +75,16 @@ class NearbyController(val context: Context,
         }
 
 
-        override fun onDisconnected(endpointId: String) {
-            Log.d("NearbySystem", "Disconnected from endpoint: $endpointId")
+        override fun onDisconnected(userId: String) {
+            val endpointId = userIdToEndpointId[userId]
+                ?: return // No endpoint found for this user ID
             connectedEndpoints.remove(endpointId)
         }
     };
 
-    fun connectToEndpoint(endpointId: String) {
-        val userId = requireNotNull(UserRepository.me?.id) { "Authentication not initialized" }
+    fun connectToEndpoint(userId: String) {
+        val endpointId = userIdToEndpointId[userId]
+            ?: throw IllegalArgumentException("No endpoint found for user ID: $userId")
 
         Nearby.getConnectionsClient(context)
             .requestConnection(userId, endpointId, connectionLifecycleCallback)
@@ -93,7 +97,9 @@ class NearbyController(val context: Context,
             }
     }
 
-    fun sendPayload(endpointId: String, payload: Payload) {
+    fun sendPayload(userId: String, payload: Payload) {
+        val endpointId = userIdToEndpointId[userId]
+            ?: throw IllegalArgumentException("No endpoint found for user ID: $userId")
         Nearby.getConnectionsClient(context)
             .sendPayload(endpointId, payload)
             .addOnSuccessListener {

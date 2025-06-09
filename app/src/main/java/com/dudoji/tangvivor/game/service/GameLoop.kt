@@ -6,7 +6,7 @@ class GameLoop {
     lateinit var runnable: Runnable
 
     companion object {
-        private const val FRAME_RATE = 10 // frames per second
+        private const val FRAME_RATE = 1 // frames per second
         private const val FRAME_TIME = 1000 / FRAME_RATE // milliseconds per frame
     }
 
