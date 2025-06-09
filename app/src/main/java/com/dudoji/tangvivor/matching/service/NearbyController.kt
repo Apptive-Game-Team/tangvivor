@@ -15,6 +15,7 @@ import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
+import java.util.concurrent.ConcurrentHashMap
 
 class NearbyController(val context: Context,
                        private val payloadCallback: PayloadCallback, val onDiscoverChanged: () -> Unit) {
@@ -22,8 +23,8 @@ class NearbyController(val context: Context,
         private val SERVICE_ID = "com.dudoji.tangvivor.matching"
     }
 
-    val connectedEndpointIds: MutableList<String> = mutableListOf()
-    val discoveredEndpointIds : MutableList<String> = mutableListOf()
+    val connectedEndpoints: MutableMap<String, String> = ConcurrentHashMap()
+    val discoveredEndpoints: MutableMap<String, String> = ConcurrentHashMap()
 
     private val endpointDiscoveryCallback: EndpointDiscoveryCallback =
     object : EndpointDiscoveryCallback() {
@@ -31,13 +32,14 @@ class NearbyController(val context: Context,
             endpointId: String,
             p1: DiscoveredEndpointInfo
         ) {
-            discoveredEndpointIds.add(endpointId)
+            Log.d("NearbySystem", "Endpoint found: $endpointId")
+            discoveredEndpoints.put(endpointId, p1.endpointName)
             onDiscoverChanged()
         }
 
         override fun onEndpointLost(endpointId: String) {
-            Log.d("NearbyController", "Endpoint lost: $endpointId")
-            discoveredEndpointIds.remove(endpointId)
+            Log.d("NearbySystem", "Endpoint lost: $endpointId")
+            discoveredEndpoints.remove(endpointId)
             onDiscoverChanged()
         }
     };
@@ -46,32 +48,34 @@ class NearbyController(val context: Context,
     object : ConnectionLifecycleCallback() {
 
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
+            Log.d("NearbySystem", "Connection initiated with endpoint: $endpointId")
             Nearby.getConnectionsClient(context).acceptConnection(endpointId, payloadCallback);
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
             when (result.getStatus().getStatusCode()) {
                 ConnectionsStatusCodes.STATUS_OK -> {
-                    connectedEndpointIds.add(endpointId)
+                    connectedEndpoints.put(endpointId, discoveredEndpoints[endpointId] ?: "Unknown Endpoint")
+                    Log.d("NearbySystem", "Connected to endpoint: $endpointId")
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED -> {
-                    Log.d("NearbyController", "Connection rejected by the other endpoint.")
+                    Log.d("NearbySystem", "Connection rejected by the other endpoint.")
                 }
 
                 ConnectionsStatusCodes.STATUS_ERROR -> {
-                    Log.d("NearbyController", "Connection error: ${result.getStatus().getStatusMessage()}")
+                    Log.d("NearbySystem", "Connection error: ${result.getStatus().getStatusMessage()}")
                 }
 
                 else -> {
-                    Log.d("NearbyController", "Unknown status code: ${result.getStatus().getStatusCode()}")
+                    Log.d("NearbySystem", "Unknown status code: ${result.getStatus().getStatusCode()}")
                 }
             }
         }
 
 
         override fun onDisconnected(endpointId: String) {
-            Log.d("NearbyController", "Disconnected from endpoint: $endpointId")
-            connectedEndpointIds.remove(endpointId)
+            Log.d("NearbySystem", "Disconnected from endpoint: $endpointId")
+            connectedEndpoints.remove(endpointId)
         }
     };
 
@@ -82,24 +86,28 @@ class NearbyController(val context: Context,
             .requestConnection(userId, endpointId, connectionLifecycleCallback)
             .addOnSuccessListener {
                 // Connection request sent successfully
+                Log.d("NearbySystem", "Connection request sent to endpoint: $endpointId")
             }
             .addOnFailureListener { e ->
-                e.printStackTrace()
+                Log.e("NearbySystem", "Failed to send connection request to endpoint: $endpointId", e)
             }
     }
 
     fun sendPayload(endpointId: String, payload: Payload) {
         Nearby.getConnectionsClient(context)
             .sendPayload(endpointId, payload)
+            .addOnSuccessListener {
+                Log.d("NearbySystem", "Payload sent successfully to endpoint: $endpointId")
+            }
             .addOnFailureListener { e ->
-                e.printStackTrace()
+                Log.e("NearbySystem", "Failed to send payload to endpoint: $endpointId", e)
             }
     }
 
     fun disconnectFromEndpoint(endpointId: String) {
         Nearby.getConnectionsClient(context)
             .disconnectFromEndpoint(endpointId)
-        connectedEndpointIds.remove(endpointId)
+        connectedEndpoints.remove(endpointId)
     }
 
     fun startAdvertising() {
@@ -113,10 +121,10 @@ class NearbyController(val context: Context,
             .startAdvertising(
                 userId, SERVICE_ID, connectionLifecycleCallback, advertisingOptions)
             .addOnSuccessListener {
-                // We're advertising!
+                Log.d("NearbySystem", "Started advertising with user ID: $userId")
             }
             .addOnFailureListener{ e ->
-                e.printStackTrace()
+                Log.e("NearbySystem", "Failed to start advertising", e)
             }
     }
 
@@ -126,10 +134,10 @@ class NearbyController(val context: Context,
         Nearby.getConnectionsClient(context)
             .startDiscovery(SERVICE_ID, endpointDiscoveryCallback, discoveryOptions)
             .addOnSuccessListener{
-
+                Log.d("NearbySystem", "Started discovery for service ID: $SERVICE_ID")
             }
             .addOnFailureListener{ e ->
-                e.printStackTrace()
+                Log.e("NearbySystem", "Failed to start discovery", e)
             }
     }
 }

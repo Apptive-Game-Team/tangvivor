@@ -2,6 +2,7 @@ package com.dudoji.tangvivor.matching.service
 
 import com.dudoji.tangvivor.repository.UserRepository
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.dudoji.tangvivor.BaseDrawerActivity
 import com.dudoji.tangvivor.matching.entity.User
@@ -37,6 +38,8 @@ class NearbyUserController(val context: Context,
             },
             onDiscoverChanged
         )
+        nearbyController.startAdvertising()
+        nearbyController.startDiscovery()
     }
 
     fun invite(user: User, sessionId: String) {
@@ -53,8 +56,10 @@ class NearbyUserController(val context: Context,
     }
 
     suspend fun getNearbyUsers(): List<User> {
-        val flow = nearbyController.discoveredEndpointIds.asFlow()
+        Log.d("NearbySystem", "Getting nearby users")
+        val flow = nearbyController.discoveredEndpoints.values.asFlow()
         val result: List<User> = flow.map { value ->
+            Log.d("NearbySystem", "Fetching user for endpoint: $value")
             UserRepository.getUser(value)
         }.toList()
 

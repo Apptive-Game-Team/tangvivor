@@ -60,6 +60,7 @@ class MainActivity : BaseDrawerActivity() {
                 UserRepository.saveUser(user)
                 UserRepository.me = user
 
+                onAuthenticationSuccess()
                 val intent = Intent(this@MainActivity, RoomListActivity::class.java)
                 startActivity(intent)
                 finish()
