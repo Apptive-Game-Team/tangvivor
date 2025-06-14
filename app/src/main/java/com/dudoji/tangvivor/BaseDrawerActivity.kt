@@ -21,6 +21,7 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         private val playerListAdapter: PlayerListAdapter = PlayerListAdapter(
             listOf()
         )
+        var nearbyUserController: NearbyUserController? = null
     }
 
     private lateinit var drawerLayout: DrawerLayout
@@ -32,13 +33,11 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         Log.d("BaseDrawerActivity", "onDiscoverChanged called")
         GlobalScope.launch(Dispatchers.Main) {
             Log.d("NearbySystem", "Updating nearby users in RecyclerView")
-            val nearbyUsers = nearbyUserController.getNearbyUsers()
+            val nearbyUsers = nearbyUserController?.getNearbyUsers()
             Log.d("NearbySystem", "Nearby users: $nearbyUsers")
-            playerListAdapter.updateUserList(nearbyUsers)
+            playerListAdapter.updateUserList(nearbyUsers!!)
         }
     }
-
-    lateinit var nearbyUserController: NearbyUserController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +46,8 @@ abstract class BaseDrawerActivity: AppCompatActivity() {
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         playerListAdapter.activity = this
+        nearbyUserController?.context = this
+        nearbyUserController?.nearbyController?.context = this
         recyclerView.adapter = playerListAdapter
 
 

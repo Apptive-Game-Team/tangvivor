@@ -21,6 +21,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
@@ -47,6 +50,7 @@
         </activity>
 
         <activity android:name=".matching.activity.RoomListActivity"></activity>
-        <activity android:name=".game.GameActivity"></activity>
+        <activity android:name=".game.activity.GameActivity"></activity>
+        <activity android:name=".game.activity.ResultActivity"></activity>
     </application>
 </manifest>

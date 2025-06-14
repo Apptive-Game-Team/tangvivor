@@ -27,10 +27,11 @@ class RoomListAdapter(val roomList: List<Room>, val activity: RoomListActivity) 
         val room = roomList[position]
         holder.nameTextView.text = room.name
         activity.lifecycleScope.launch {
-            holder.makerTextView.text = UserRepository.getUser(room.user1!!).name
+            holder.makerTextView.text = UserRepository.getUser(room.user1?: throw RuntimeException("")).name
         }
 
         holder.itemView.setOnClickListener {
+            Log.d("MatchingSystem", "Joining room: ${room.name}")
             RoomRepository.db.collection(RoomRepository.COLLECTION_NAME)
                 .document(room.name!!)
                 .update("user2", UserRepository.me?.id)

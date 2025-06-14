@@ -1,12 +1,15 @@
-package com.dudoji.tangvivor.game
+package com.dudoji.tangvivor.game.activity
 
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.activity.ComponentActivity
 import androidx.camera.view.PreviewView
 import com.dudoji.tangvivor.BaseDrawerActivity
+import com.dudoji.tangvivor.DEFAULT_HP
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.camera.OnFacePositionListener
 import com.dudoji.tangvivor.game.entity.Master
@@ -14,12 +17,16 @@ import com.dudoji.tangvivor.game.entity.Session
 import com.dudoji.tangvivor.game.service.CombinedDetector
 import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.GameLoop
+import com.dudoji.tangvivor.game.service.GunController
 import com.dudoji.tangvivor.game.service.PlayerController
+import com.dudoji.tangvivor.game.service.ResultHandler
 import com.dudoji.tangvivor.repository.GameRepository
+import com.dudoji.tangvivor.repository.ImageRespository
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.mlkit.vision.pose.Pose
-import com.google.mlkit.vision.pose.PoseLandmark
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
+import kotlinx.coroutines.*
 
 class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     lateinit var playerController : PlayerController
@@ -31,14 +38,30 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     lateinit var playerHpBar: ProgressBar
     lateinit var enemyHpBar: ProgressBar
 
+    lateinit var playerGun: GunController
+    lateinit var enemyGun: GunController
+
     // Camera Setting
     private lateinit var previewView: PreviewView
     private lateinit var combinedDetector: CombinedDetector
 
     private lateinit var sessionId: String
+    private lateinit var sessionSaver: Session
+
+    // Sound Setting
+    private lateinit var soundPool: SoundPool
+    private var shootSoundId: Int = 0
+
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
+
+    val resultHandler: ResultHandler = ResultHandler()
+
+    var lastHp = DEFAULT_HP
+
+    // blink Variable
+    private var isBlinking = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +74,28 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.player),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            false
         )
 
         playerPoint = PlayerController(
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.playerPointer),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            true
         )
+
+        playerGun = GunController(
+            if (me == 1) Master.User1 else Master.User2,
+            findViewById<ImageView>(R.id.playerGun),
+            findViewById(R.id.game_frame_layout),
+            sessionId,
+            true
+        )
+
+        if (ImageRespository.imageUri != null)
+            findViewById<ImageView>(R.id.player).setImageURI(ImageRespository.imageUri)
 
         // Camera Setting
         previewView = findViewById(R.id.previewView)
@@ -84,15 +120,44 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             if (me == 2) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.enemy),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            false
         )
 
         enemyPoint = EnemyController(
             if (me == 2) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.enemyPointer),
             findViewById(R.id.game_frame_layout),
-            sessionId
+            sessionId,
+            true
         )
+
+        enemyGun = GunController(
+            if (me == 2) Master.User1 else Master.User2,
+            findViewById<ImageView>(R.id.enemyGun),
+            findViewById(R.id.game_frame_layout),
+            sessionId,
+            true
+        )
+
+        sessionSaver = Session(
+            if (me == 1) Master.User1
+            else Master.User2
+        )
+
+
+        // ============ Sound Part =============
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_GAME)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(10)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        shootSoundId = soundPool.load(this, R.raw.tang_sound, 1)
 
         gameLoop.startGameLoop {
             db.collection("sessions")
@@ -102,10 +167,40 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                     val session = document.toObject(Session::class.java)
                     if (session != null) {
                         enemyController.update(session)
+                        enemyPoint.update(session)
+                        enemyGun.updateRotate(enemyPoint)
+                        enemyGun.updateLocation(enemyController)
                         updateHpBars(session)
+
+                        val currentHp = getMyHp(session)
+                        if (lastHp > currentHp) {
+                            hitBlinkImageView(playerController.player)
+                            Log.d("GameActivity", "Player HP decreased: $lastHp -> $currentHp")
+                            lastHp = currentHp
+                        }
+
+                        if (session.getTang(me)) {
+                            playTangAnimation(enemyGun.player)
+                            playShootSound()
+                        }
+
+                        if (resultHandler.checkResult(this, session)) {
+                            gameLoop.stopGameLoop()
+                            return@addOnSuccessListener
+                        }
+
+                        db.collection("sessions")
+                            .document(sessionId)
+                            .update(sessionSaver.toMap(session))
+
+                        sessionSaver.initialize()
                     }
                 }
         }
+    }
+
+    fun getMyHp(session: Session): Int {
+        return if (me == 1) session.user1Hp.toInt() else session.user2Hp.toInt()
     }
 
     fun updateHpBars(session: Session) {
@@ -121,13 +216,15 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     // Camera Function
     override fun onFacePosition(normX: Float) {
         runOnUiThread {
-            playerController.setX(normX)
+            playerController.setX(normX, sessionSaver)
+            playerGun.updateLocation(playerController)
         }
     }
 
     private fun onPoseDetected(normX: Float) {
         runOnUiThread {
-            playerPoint.setX(normX)
+            playerPoint.setX(normX, sessionSaver)
+            playerGun.updateRotate(playerPoint)
         }
     }
 
@@ -143,11 +240,51 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         val enemyWidth = enemyController.player.width
         val enemyHeight = enemyController.player.height
 
+        // SOUND
+        playShootSound()
+
+        sessionSaver.setTang(me)
+
         if (
             playerPointX >= enemyX && playerPointX + playerPointWidth <= enemyX + enemyWidth &&
             playerPointY >= enemyY && playerPointY + playerPointHeight <= enemyY + enemyHeight
         ) {
-            enemyController.onAttacked(10L);
+            enemyController.onAttacked(10, sessionSaver)
+            hitBlinkImageView(enemyController.player)
+            playTangAnimation(playerGun.player)
+        }
+    }
+
+    private fun playTangAnimation(imageView: ImageView) {
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                imageView.setImageResource(R.drawable.weapons_tanging)
+                delay(500)
+                imageView.setImageResource(R.drawable.weapons)
+            }
+        }
+    }
+
+    private fun hitBlinkImageView(imageView: ImageView) {
+        if (isBlinking) return
+        isBlinking = true;
+        GlobalScope.launch {
+            val endTime = System.currentTimeMillis() + 1000
+
+            var isVisible = true
+
+            while (System.currentTimeMillis() < endTime) {
+                withContext(Dispatchers.Main) {
+                    imageView.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
+                }
+                isVisible = !isVisible
+                delay(100)  // 500ms마다 깜빡이기 (1초 동안 2번 깜빡임)
+            }
+
+            withContext(Dispatchers.Main) {
+                imageView.visibility = View.VISIBLE
+            }
+            isBlinking = false
         }
     }
 
@@ -164,7 +301,12 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     override fun onDestroy() {
         super.onDestroy()
         gameLoop.stopGameLoop()
-        faceDetector.stop()
+        soundPool.release()
         GameRepository.quitGame()
+    }
+
+    // Shoot Sound
+    fun playShootSound() {
+        soundPool.play(shootSoundId, 1.0f, 1.0f, 1, 0, 1.0f)
     }
 }

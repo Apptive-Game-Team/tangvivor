@@ -1,5 +1,7 @@
 package com.dudoji.tangvivor.matching.entity
 
+import android.net.Uri
+
 class User {
     var id: String? = null
     var name: String? = null
