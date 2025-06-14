@@ -180,6 +180,10 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                             lastHp = currentHp
                         }
 
+                        if (session.getTang(me)) {
+                            playTangAnimation(enemyGun.player)
+                            playShootSound()
+                        }
 
                         if (resultHandler.checkResult(this, session)) {
                             gameLoop.stopGameLoop()
@@ -190,7 +194,7 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                             .document(sessionId)
                             .update(sessionSaver.toMap(session))
 
-                        sessionSaver.toSetHp()
+                        sessionSaver.initialize()
                     }
                 }
         }
@@ -240,11 +244,13 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         // SOUND
         playShootSound()
 
+        sessionSaver.setTang(me)
+
         if (
             playerPointX >= enemyX && playerPointX + playerPointWidth <= enemyX + enemyWidth &&
             playerPointY >= enemyY && playerPointY + playerPointHeight <= enemyY + enemyHeight
         ) {
-            enemyController.onAttacked(10, sessionSaver);
+            enemyController.onAttacked(10, sessionSaver)
             hitBlinkImageView(enemyController.player)
             playTangAnimation(playerGun.player)
         }
