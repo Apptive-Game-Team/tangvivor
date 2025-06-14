@@ -17,7 +17,7 @@ import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.Strategy
 import java.util.concurrent.ConcurrentHashMap
 
-class NearbyController(val context: Context,
+class NearbyController(var context: Context,
                        private val payloadCallback: PayloadCallback, val onDiscoverChanged: () -> Unit) {
     companion object {
         private val SERVICE_ID = "com.dudoji.tangvivor.matching"
@@ -67,7 +67,6 @@ class NearbyController(val context: Context,
                 ConnectionsStatusCodes.STATUS_ERROR -> {
                     Log.d("NearbySystem", "Connection error: ${result.getStatus().getStatusMessage()}")
                 }
-
                 else -> {
                     Log.d("NearbySystem", "Unknown status code: ${result.getStatus().getStatusCode()}")
                 }

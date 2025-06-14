@@ -30,7 +30,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="16dp"
-            android:background="#000000"
+            android:background="@drawable/player"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             android:contentDescription="Profile Image" />
     </LinearLayout>
