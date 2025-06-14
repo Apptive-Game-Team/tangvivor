@@ -58,18 +58,20 @@
 
     <ImageView
         android:id="@+id/playerPointer"
+        android:src="@drawable/cross_hair"
+        android:paddingTop="10dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/purple_200"
         app:layout_constraintTop_toTopOf="@id/enemy"
         app:layout_constraintBottom_toBottomOf="@id/enemy"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/enemyPointer"
+        android:src="@drawable/cross_hair"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/purple_200"
+        android:paddingBottom="10dp"
         app:layout_constraintTop_toTopOf="@id/player"
         app:layout_constraintBottom_toBottomOf="@id/player"
         app:layout_constraintStart_toStartOf="parent"  />

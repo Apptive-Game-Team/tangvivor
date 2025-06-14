@@ -1,5 +1,7 @@
 package com.dudoji.tangvivor.game.activity
 
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,6 +46,10 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
 
     private lateinit var sessionId: String
     private lateinit var sessionSaver: Session
+
+    // Sound Setting
+    private lateinit var soundPool: SoundPool
+    private var shootSoundId: Int = 0
 
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
@@ -136,6 +142,20 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             else Master.User2
         )
 
+
+        // ============ Sound Part =============
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_GAME)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(10)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        shootSoundId = soundPool.load(this, R.raw.tang_sound, 1)
+
         gameLoop.startGameLoop {
             db.collection("sessions")
                 .document(sessionId)
@@ -200,6 +220,9 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         val enemyWidth = enemyController.player.width
         val enemyHeight = enemyController.player.height
 
+        // SOUND
+        playShootSound()
+
         if (
             playerPointX >= enemyX && playerPointX + playerPointWidth <= enemyX + enemyWidth &&
             playerPointY >= enemyY && playerPointY + playerPointHeight <= enemyY + enemyHeight
@@ -245,6 +268,12 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     override fun onDestroy() {
         super.onDestroy()
         gameLoop.stopGameLoop()
+        soundPool.release()
         GameRepository.quitGame()
+    }
+
+    // Shoot Sound
+    fun playShootSound() {
+        soundPool.play(shootSoundId, 1.0f, 1.0f, 1, 0, 1.0f)
     }
 }
