@@ -1,4 +1,4 @@
-package com.dudoji.tangvivor.game
+package com.dudoji.tangvivor.game.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,7 @@ import com.dudoji.tangvivor.game.service.CombinedDetector
 import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.GameLoop
 import com.dudoji.tangvivor.game.service.PlayerController
+import com.dudoji.tangvivor.game.service.ResultHandler
 import com.dudoji.tangvivor.repository.GameRepository
 import com.dudoji.tangvivor.repository.ImageRespository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,6 +44,8 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     val gameLoop : GameLoop = GameLoop()
     var me by Delegates.notNull<Int>()
     val db = FirebaseFirestore.getInstance()
+
+    val resultHandler: ResultHandler = ResultHandler()
 
     // blink Variable
     private var isBlinking = false
@@ -123,6 +126,12 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         enemyController.update(session)
                         enemyPoint.update(session)
                         updateHpBars(session)
+
+                        if (resultHandler.checkResult(this, session)) {
+                            gameLoop.stopGameLoop()
+                            return@addOnSuccessListener
+                        }
+
                         db.collection("sessions")
                             .document(sessionId)
                             .update(sessionSaver.toMap(session))

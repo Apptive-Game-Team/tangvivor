@@ -2,7 +2,7 @@ package com.dudoji.tangvivor.repository
 
 import android.content.Context
 import android.content.Intent
-import com.dudoji.tangvivor.game.GameActivity
+import com.dudoji.tangvivor.game.activity.GameActivity
 import com.dudoji.tangvivor.game.entity.Session
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
