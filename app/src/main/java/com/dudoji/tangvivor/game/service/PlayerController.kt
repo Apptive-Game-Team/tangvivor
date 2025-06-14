@@ -57,9 +57,9 @@ open class PlayerController(val master: Master, val player: ImageView, val const
     fun onAttacked(damage: Int, sessionSaver: Session) {
         when (master) {
             Master.User1 ->
-                sessionSaver.user2Hp = -1*damage
-            Master.User2 ->
                 sessionSaver.user1Hp = -1*damage
+            Master.User2 ->
+                sessionSaver.user2Hp = -1*damage
         }
     }
 }
