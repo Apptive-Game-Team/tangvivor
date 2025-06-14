@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
-    android:background="@color/black"
-    android:paddingStart="20dp">
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="#283593"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:textColor="@color/white"
         android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ECEFF1"
         android:text="Player Name"
-        android:textSize="20sp"/>
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
 </LinearLayout>
