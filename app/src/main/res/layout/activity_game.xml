@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/game_frame_layout">
+    android:id="@+id/game_frame_layout"
+    android:background="@drawable/tangvivor_background">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
