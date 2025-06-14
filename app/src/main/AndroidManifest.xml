@@ -50,6 +50,7 @@
         </activity>
 
         <activity android:name=".matching.activity.RoomListActivity"></activity>
-        <activity android:name=".game.GameActivity"></activity>
+        <activity android:name=".game.activity.GameActivity"></activity>
+        <activity android:name=".game.activity.ResultActivity"></activity>
     </application>
 </manifest>
