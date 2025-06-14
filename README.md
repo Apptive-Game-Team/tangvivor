@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/bf825d74-5879-4850-a685-5412f40bf94b
 # Tangvivor
 
 **Tangvivor**는 얼굴 인식과 손 인식을 활용해 캐릭터를 조작하고 총을 쏘는 안드로이드 대전 게임입니다.  
@@ -24,3 +26,7 @@
   - Google Play Services
   - Nearby Connections API
   - Firebase Firestore (클라우드 데이터베이스)
+
+## Demo
+
+Uploading screen-20250614-122416~2 (1).mp4… 
