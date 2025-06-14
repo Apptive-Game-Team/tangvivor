@@ -1,6 +1,5 @@
 package com.dudoji.tangvivor.game.service
 
-
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.activity.GameActivity
 import com.dudoji.tangvivor.game.activity.ResultActivity
@@ -17,7 +16,7 @@ class ResultHandler {
         if (session.user1Hp <= 0 || session.user2Hp <= 0) {
             var result: ResultType = getResultType(session, gameActivity.me)
 
-            if (result == ResultType.DRAW) {
+            if (result == ResultType.WIN) {
                 GlobalScope.launch {
                     updateScore(gameActivity)
                 }
@@ -38,7 +37,6 @@ class ResultHandler {
                 LeaderboardVariant.TIME_SPAN_ALL_TIME,
                 LeaderboardVariant.COLLECTION_PUBLIC
             ).await().get()?.rawScore ?: 0L
-
         client.submitScore(gameActivity.getString(R.string.score_leaderboard_id),
                 score + 1
         )

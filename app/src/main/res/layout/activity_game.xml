@@ -41,6 +41,8 @@
         android:max="100"
         android:progress="100"
         style="@android:style/Widget.ProgressBar.Horizontal"
+        android:progressTint="#FF5252"
+        android:backgroundTint="#CCCCCC"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
@@ -50,6 +52,8 @@
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:max="100"
         android:progress="100"
+        android:progressTint="#4CAF50"
+        android:backgroundTint="#CCCCCC"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
