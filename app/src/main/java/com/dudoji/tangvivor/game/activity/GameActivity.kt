@@ -14,6 +14,7 @@ import com.dudoji.tangvivor.game.entity.Session
 import com.dudoji.tangvivor.game.service.CombinedDetector
 import com.dudoji.tangvivor.game.service.EnemyController
 import com.dudoji.tangvivor.game.service.GameLoop
+import com.dudoji.tangvivor.game.service.GunController
 import com.dudoji.tangvivor.game.service.PlayerController
 import com.dudoji.tangvivor.game.service.ResultHandler
 import com.dudoji.tangvivor.repository.GameRepository
@@ -33,6 +34,9 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
 
     lateinit var playerHpBar: ProgressBar
     lateinit var enemyHpBar: ProgressBar
+
+    lateinit var playerGun: GunController
+    lateinit var enemyGun: GunController
 
     // Camera Setting
     private lateinit var previewView: PreviewView
@@ -68,6 +72,14 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         playerPoint = PlayerController(
             if (me == 1) Master.User1 else Master.User2,
             findViewById<ImageView>(R.id.playerPointer),
+            findViewById(R.id.game_frame_layout),
+            sessionId,
+            true
+        )
+
+        playerGun = GunController(
+            if (me == 1) Master.User1 else Master.User2,
+            findViewById<ImageView>(R.id.playerGun),
             findViewById(R.id.game_frame_layout),
             sessionId,
             true
@@ -111,6 +123,14 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
             true
         )
 
+        enemyGun = GunController(
+            if (me == 2) Master.User1 else Master.User2,
+            findViewById<ImageView>(R.id.enemyGun),
+            findViewById(R.id.game_frame_layout),
+            sessionId,
+            true
+        )
+
         sessionSaver = Session(
             if (me == 1) Master.User1
             else Master.User2
@@ -125,6 +145,8 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                     if (session != null) {
                         enemyController.update(session)
                         enemyPoint.update(session)
+                        enemyGun.updateRotate(enemyPoint)
+                        enemyGun.updateLocation(enemyController)
                         updateHpBars(session)
 
                         if (resultHandler.checkResult(this, session)) {
@@ -155,12 +177,14 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     override fun onFacePosition(normX: Float) {
         runOnUiThread {
             playerController.setX(normX, sessionSaver)
+            playerGun.updateLocation(playerController)
         }
     }
 
     private fun onPoseDetected(normX: Float) {
         runOnUiThread {
             playerPoint.setX(normX, sessionSaver)
+            playerGun.updateRotate(playerPoint)
         }
     }
 

@@ -68,6 +68,30 @@
         android:background="@color/purple_200"
         app:layout_constraintTop_toTopOf="@id/player"
         app:layout_constraintBottom_toBottomOf="@id/player"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"  />
 
+    <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/weapons"
+            android:id="@+id/playerGun"
+            app:layout_constraintTop_toTopOf="@id/player"
+            app:layout_constraintBottom_toBottomOf="@id/player"
+            app:layout_constraintStart_toStartOf="@id/player"
+            app:layout_constraintEnd_toEndOf="@id/player"
+            android:layout_marginTop="-100dp"
+            android:rotation="180"
+            />
+
+    <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/weapons"
+            android:id="@+id/enemyGun"
+            app:layout_constraintTop_toTopOf="@id/enemy"
+            app:layout_constraintBottom_toBottomOf="@id/enemy"
+            app:layout_constraintStart_toStartOf="@id/enemy"
+            app:layout_constraintEnd_toEndOf="@id/enemy"
+            android:layout_marginTop="100dp"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
