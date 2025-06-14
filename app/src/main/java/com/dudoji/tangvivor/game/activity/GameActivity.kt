@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.camera.view.PreviewView
 import com.dudoji.tangvivor.BaseDrawerActivity
+import com.dudoji.tangvivor.DEFAULT_HP
 import com.dudoji.tangvivor.R
 import com.dudoji.tangvivor.game.camera.OnFacePositionListener
 import com.dudoji.tangvivor.game.entity.Master
@@ -56,6 +57,8 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
     val db = FirebaseFirestore.getInstance()
 
     val resultHandler: ResultHandler = ResultHandler()
+
+    var lastHp = DEFAULT_HP
 
     // blink Variable
     private var isBlinking = false
@@ -169,6 +172,15 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         enemyGun.updateLocation(enemyController)
                         updateHpBars(session)
 
+                        val currentHp = getMyHp()
+                        if (lastHp > currentHp) {
+                            hitBlinkImageView(playerController.player)
+                            playTangAnimation(enemyGun.player)
+
+                            lastHp = currentHp
+                        }
+
+
                         if (resultHandler.checkResult(this, session)) {
                             gameLoop.stopGameLoop()
                             return@addOnSuccessListener
@@ -177,10 +189,15 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         db.collection("sessions")
                             .document(sessionId)
                             .update(sessionSaver.toMap(session))
+
                         sessionSaver.toSetHp()
                     }
                 }
         }
+    }
+
+    fun getMyHp(): Int {
+        return if (me == 1) sessionSaver.user1Hp.toInt() else sessionSaver.user2Hp.toInt()
     }
 
     fun updateHpBars(session: Session) {
@@ -229,6 +246,17 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         ) {
             enemyController.onAttacked(10, sessionSaver);
             hitBlinkImageView(enemyController.player)
+            playTangAnimation(playerGun.player)
+        }
+    }
+
+    private fun playTangAnimation(imageView: ImageView) {
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                imageView.setImageResource(R.drawable.weapons_tanging)
+                delay(500)
+                imageView.setImageResource(R.drawable.weapons)
+            }
         }
     }
 
