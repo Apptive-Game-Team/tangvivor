@@ -172,11 +172,10 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
                         enemyGun.updateLocation(enemyController)
                         updateHpBars(session)
 
-                        val currentHp = getMyHp()
+                        val currentHp = getMyHp(session)
                         if (lastHp > currentHp) {
                             hitBlinkImageView(playerController.player)
-                            playTangAnimation(enemyGun.player)
-
+                            Log.d("GameActivity", "Player HP decreased: $lastHp -> $currentHp")
                             lastHp = currentHp
                         }
 
@@ -200,8 +199,8 @@ class GameActivity : BaseDrawerActivity(), OnFacePositionListener {
         }
     }
 
-    fun getMyHp(): Int {
-        return if (me == 1) sessionSaver.user1Hp.toInt() else sessionSaver.user2Hp.toInt()
+    fun getMyHp(session: Session): Int {
+        return if (me == 1) session.user1Hp.toInt() else session.user2Hp.toInt()
     }
 
     fun updateHpBars(session: Session) {
